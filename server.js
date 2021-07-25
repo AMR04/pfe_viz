@@ -8,7 +8,7 @@ const admin = require('./route/adminRouter')
 const tech = require('./route/techRouter')
 
 var mongoose = require('mongoose')
-var mongoDB = 'mongodb://127.0.0.1/vizmerlad_database';
+var mongoDB = 'mongodb+srv://vizmerald:vizmerald@newcluster.7xawv.mongodb.net/vizmerald?retryWrites=true&w=majority';
 mongoose.connect(mongoDB, {useNewUrlParser: true , useUnifiedTopology: true});
 mongoose.Promise = global.Promise;
 var db = mongoose.connection;
