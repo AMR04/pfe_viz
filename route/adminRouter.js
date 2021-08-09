@@ -19,7 +19,7 @@ route.post("/addnewdev", (req, res, next) => {
         })
         newDevice.save(function (err) {
             if (err) {
-                res.send({status: "404" })
+                res.send({status: "404" ,message: "error", })
     
             } else {
                 res.send({status: "200", message: "device added !!", data: newDevice._id})
