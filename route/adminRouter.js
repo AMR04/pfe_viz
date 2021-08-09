@@ -13,6 +13,8 @@ route.post("/addnewdev", (req, res, next) => {
           version: req.body.version,
         keyword: req.body.keyword,
           image: req.body.image,
+          bluename: req.body.bluename,
+          blueadress:req.body.blueadress
     
         })
         newDevice.save(function (err) {
@@ -20,7 +22,7 @@ route.post("/addnewdev", (req, res, next) => {
                 res.send({status: "404" })
     
             } else {
-                res.send({status: "200", message: "device d'intervention ajouter !!", data: newDevice})
+                res.send({status: "200", message: "device added !!", data: newDevice._id})
                
             }
         })})
