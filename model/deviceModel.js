@@ -4,7 +4,7 @@ var Schema = mongoose.Schema
 
 var deviceSchema= new Schema({
 
-    _id: {type :Schema.Types.ObjectId },
+    //_id: {type :Schema.Types.ObjectId },
 
     devicename: {
         type: String,
