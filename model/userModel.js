@@ -25,11 +25,18 @@ var  userSchema =  new Schema(
         },*/
         country: {
             type: String,
-           // required: true
+           // required: tru
         },
 
         phone:{
-            type:Number}
+            type:Number},
+      
+      
+       device: [{
+                type: Schema.Types.ObjectId,
+               
+                  ref: 'Device'
+              }],
       
 
     //    device: { type: mongoose.Schema.Types.ObjectId, ref: 'Device', required: true },
