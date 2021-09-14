@@ -4,7 +4,7 @@ var Schema = mongoose.Schema
 
 var deviceSchema= new Schema({
 
-    //_id: {type :Schema.Types.ObjectId },
+   // _id: {type :Schema.Types.ObjectId },
 
     devicename: {
         type: String,
@@ -37,15 +37,25 @@ var deviceSchema= new Schema({
         
       },
     current: {
-        type:Number,
+        type:String,
         //required: true
     },
-    voltage: {
-        type:Number,
-        //required: true
-    } ,
+    
     speed: {
-        type: Number,
+        type: String,
+        //required: true
+    } , 
+
+    temperature :{
+        type: String,
+        //required: true
+    } , 
+    humidity:{
+        type: String,
+        //required: true
+    } , 
+    battery :{
+        type: String,
         //required: true
     } , 
   
@@ -54,11 +64,7 @@ var deviceSchema= new Schema({
        
           ref: 'User'
       }],
-    tech: {
-        type: Schema.Types.ObjectId,
-       
-          ref: 'Tech'
-      },
+
 
 
 })
