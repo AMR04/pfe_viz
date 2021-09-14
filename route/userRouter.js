@@ -78,28 +78,25 @@ route.post("/signup", async (req, res) => {
       });
   });
 
-/*
 
-route.get('/list', function (req, res, next) {
-    var listuser = [{}]
-    User.find({}).populate(['devices']).exec(function (err, users) {
-        if (err)
-            next(err)
-        else {
-            for (var user of users) {
-                listuser.push({
-                  _id: user._id,
-                   username: user.username,
-                    email: user.email,
-                    devices: user.devices,
-               
-                })
-            }
-            res.json({status: "ok", message: "listes des users", data:listuser})
-        }
-    })
-});
-*/
+
+  route.get("/list", (req, res, next) => {
+    User.find()
+       .populate('device')
+       .exec()
+       .then(docs => {
+         res.status(200).json({
+            lengt: docs.length,
+           data: docs
+         });
+       })
+       .catch(err => {
+         res.status(500).json({
+           error: err
+         });
+       });
+   });
+
 route.put('/userconfig/:id', function (req,res,next) {
   User.findByIdAndUpdate({_id: req.params.id} ,
     
@@ -151,11 +148,9 @@ route.get("/getdev/:id", (req, res, next) => {
         });
       }
       res.status(200).json({
-        order: order,
-        request: {
-          type: "GET",
-          url: "/getdevices"
-        }
+        order: order.device
+        
+    
       });
     })
     .catch(err => {
