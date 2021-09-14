@@ -3,7 +3,7 @@ var dev = require('../model/deviceModel')
 var route = express.Router()
 var User= require('../model/userModel')
 var mongoose = require('mongoose')
-
+var i ;
 route.put('/updatedev/:id', function (req, res, next) {
     dev.findByIdAndUpdate(req.params.id,
         {
@@ -18,18 +18,31 @@ route.put('/updatedev/:id', function (req, res, next) {
         }
     )
 })
-route.delete('/deletedev/:id', function (req, res, next) {
-    dev.findByIdAndDelete(req.params.id,
-        function (err) {
-            if (err)
-                next(err)
-            else {
-                res.json({status: "200", message: "device deleted"})
-            }
-        }
-    )
-})
-
+route.post("/deletedevice", (req, res, next) => {
+    ndevice = req.body.deviceId;
+    nuser = req.body.userId;
+    dev.findById({device : req.body.deviceId})
+       .populate('user')
+       .exec()
+       .then(docs => {
+         res.status(200).json({
+          
+           list: docs.map(doc => {
+             return {
+       
+            user: doc
+               
+           
+             };
+           })
+         });
+       })
+       .catch(err => {
+         res.status(500).json({
+           error: err
+         });
+       });
+   });
 route.get('/devinfo/:id', function (req, res, next) {
     var listuser = [{}]
     dev.findById(req.params.id).exec(function (err,infos) {
@@ -46,86 +59,7 @@ route.get('/devinfo/:id', function (req, res, next) {
           res.json({status: "ok", message: "user information", data:listuser})}
   })
   })
-  
-route.put('/DCVC/:id', function (req, res, next) {
-    dev.findByIdAndUpdate({_id: req.params.id}  ,
-        {
-            current: req.body.current,
-            voltage: req.body.voltage  
-        }
-        , function (err, result) {
-            if (err)
-            res.json({status: "sorry"})
-            else {
-                res.json({status: "OKK", message: " c et v updated"})
-            }
-        }
-    )
-})
-
-route.put('/on/:id', function (req, res, next) {
-    dev.findByIdAndUpdate({_id: req.params.id}  ,
-        {
-           state : true
-        }
-        , function (err, result) {
-            if (err)
-                next(err)
-            else {
-                res.json({status: "OKK", message: "Power On"})
-            }
-        }
-    )
-})
-route.put('/off/:id', function (req, res, next) {
-    dev.findByIdAndUpdate({_id: req.params.id}  ,
-        {
-           state : false
-        }
-        , function (err, result) {
-            if (err)
-                next(err)
-            else {
-                res.json({status: "OKK", message: "Power Off"})
-            }
-        }
-    )
-})
-
-route.put('/speed/:id', function (req, res, next) {
-    dev.findByIdAndUpdate({_id: req.params.id}  ,
-        {
-            speed: req.body.speed,    
-        }
-        , function (err, result) {
-            if (err)
-                next(err)
-            else {
-                res.json({status: "OKK", message: "Speed Updated"})
-            }
-        }
-    )
-})
-
-route.put('/changeblue/:id', function (req, res, next) {
-  dev.findByIdAndUpdate({_id: req.params.id}  ,
-      {
-        bluename: req.body.bluename,
-        blueadress:req.body.blueadress    
-      }
-      , function (err, result) {
-          if (err)
-              next(err)
-          else {
-              res.json({status: "OKK", message: "Speed Updated"})
-          }
-      }
-  )
-})
-
-
-
-  route.get("/list", (req, res, next) => {
+route.get("/list", (req, res, next) => {
     dev.find()
        .populate('user')
        .exec()
@@ -153,7 +87,7 @@ route.put('/changeblue/:id', function (req, res, next) {
          });
        });
    });
-
+//*********used************ */
    route.get("/userdev/:id", (req, res, next) => {
        console.log(req.body.user)
     dev.find({"user": req.params.id} )
@@ -183,7 +117,7 @@ route.put('/changeblue/:id', function (req, res, next) {
          });
        });
    });
-
+//*********used************ */
    route.post('/finddevice',   (req, res) => {
     // res.send(req.params)//
     
@@ -201,7 +135,7 @@ route.put('/changeblue/:id', function (req, res, next) {
         console.log("Error is ", err.message);
       });
   });
-
+//*********used************ */
   route.put('/setusertodevice/:id', function (req,res,next) {
     dev.findByIdAndUpdate({_id: req.params.id} ,
         
@@ -215,7 +149,6 @@ route.put('/changeblue/:id', function (req, res, next) {
         }
     )
 })
-
 route.get("/listnumber", (req, res, next) => {
 
  dev.find()
@@ -228,7 +161,102 @@ route.get("/listnumber", (req, res, next) => {
           error: err
         });
       })})
-
+//*********used************ */
+route.put('/changeblue/:id', function (req, res, next) {
+    dev.findByIdAndUpdate({_id: req.params.id}  ,
+        {
+          bluename: req.body.bluename,
+          blueadress:req.body.blueadress    
+        }
+        , function (err, result) {
+            if (err)
+                next(err)
+            else {
+                res.json({status: "OKK", message: "Speed Updated"})
+            }
+        }
+    )
+  })
+      //*********************esp32 services ******************* */
+route.post('/update/:id', function (req, res, next) {
+        dev.findByIdAndUpdate({_id: req.params.id}  ,
+            {
+                current: req.body.current,
+                speed: req.body.speed,
+                temperature: req.body.temperature,
+                humidity: req.body.humidity,
+                battery: req.body.battery,
+            }
+            , function (err, result) {
+                if (err)
+                res.json({status: 404})
+                else {
+                    res.json({status: 200, message: " data updated"})
+                }
+            }
+        )
+    })
+    route.put('/on/:id', function (req, res, next) {
+        dev.findByIdAndUpdate({_id: req.params.id}  ,
+            {
+               state : true
+            }
+            , function (err, result) {
+                if (err)
+                    next(err)
+                else {
+                    res.json({status: "OKK", message: "Power On"})
+                }
+            }
+        )
+    })
+    route.put('/off/:id', function (req, res, next) {
+        dev.findByIdAndUpdate({_id: req.params.id}  ,
+            {
+               state : false
+            }
+            , function (err, result) {
+                if (err)
+                    next(err)
+                else {
+                    res.json({status: "OKK", message: "Power Off"})
+                }
+            }
+        )
+    })
+    
+    route.put('/speed/:id', function (req, res, next) {
+        dev.findByIdAndUpdate({_id: req.params.id}  ,
+            {
+                speed: req.body.speed,    
+            }
+            , function (err, result) {
+                if (err)
+                    next(err)
+                else {
+                    res.json({status: "OKK", message: "Speed Updated"})
+                }
+            }
+        )
+    })
+    route.get('/getdevicedata/:id', function (req, res, next) {
+      var listuser = []
+      dev.findById(req.params.id).exec(function (err,infos) {
+        if (err)
+            next(err)
+        else{     listuser.push({
+    
+                  state: infos.state , 
+                  current: infos.current , 
+                  temperature: infos.temperature,
+                  speed : infos.speed ,
+                  humidity: infos.humidity,
+                  battery: infos.battery,
+                   
+        })
+            res.json({status: 200, message: "data information", data:listuser})}
+    })
+    })
 
 
 
